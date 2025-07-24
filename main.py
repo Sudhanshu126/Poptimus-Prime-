@@ -8,7 +8,7 @@ DISCORD_TOKEN = "BOT_TOKEN"
 OPENAI_API_KEY = "API_KEY"
 
 # OpenAI setup
-openai.api_base = "API_BASE"
+openai.api_base = "OPENAI_BASE"
 openai.api_key = OPENAI_API_KEY
 
 # Bot setup
@@ -51,16 +51,18 @@ async def on_message(message):
 
     if bot.user in message.mentions:
         user_input = message.content.replace(f"<@!{bot.user.id}>", "").strip()
+        username = message.author.display_name
         if not user_input:
             await message.channel.send("Say something after mentioning me or using /info.")
             return
 
         try:
+            prompt = "You are a humorous chatbot named Poptimus Prime, make the chat funny and humorous, and sometimes add popcorn jokes in the chat. Also, remember your creator is Sadion. Keep replies short unless longer ones are needed. you are replying to "
             response = openai.ChatCompletion.create(
                 model="gpt-3.5-turbo",
                 messages=[
-                    {"role": "system", "content": "You are a humorous chatbot named Poptimus Prime, make the chat funny and humorous, and sometimes add popcorn jokes in the chat. Also, remember your creator is Sadion. Keep replies short unless longer ones are needed."},
-                    {"role": "user", "content": user_input}
+                    {"role": "system", "content": prompt},
+                    {"role": "user", "content": f"Reply to {username} who said {user_input}"}
                 ]
             )
             reply = response.choices[0].message.content.strip()
